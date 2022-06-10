@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+#################################################################
+$outputString = "";
+$sourceFile = "/config/redirect.config";
+open (IN, $sourceFile);
+while (<IN>)
+{
+    chomp;
+    my $line = $_;
+    my ($sourceDomain, $destDomain) = split("&&", $line);
+    $outputString .= &createConfig($sourceDomain, $destDomain) . "\n#######################################\n";
+}
+close (IN);
+open (OUT, ">/var/www/html/.htaccess");
+print OUT $outputString;
+close (OUT);
+#################################################################
+#################################################################
+#################################################################
+sub createConfig
+{
+    my ($sourceDomain, $destDomain) = @_;
+    my @srcPts = split('\.', $sourceDomain);
+    my $outString = "<IfModule mod_rewrite.c>\n";
+    $outString .=   "  RewriteEngine On\n";
+    $outString .=   "  RewriteCond %{HTTP_HOST} ^$sourceDomain\$";
+    if ($srcPts[0] ne "www")
+    {
+        $outString .=   "  [OR]\n";
+        $outString .=   "  RewriteCond %{HTTP_HOST} ^www.$sourceDomain\$\n";
+    }
+    else 
+    {
+        $outString .= "\n";
+    }
+    $outString .=   "  RewriteRule (.*)$ http://$destDomain/\$1 [R=301,L]\n";
+    $outString .=   "</IfModule>\n";
+    return $outString;
+}
