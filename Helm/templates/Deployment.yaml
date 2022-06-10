@@ -24,7 +24,17 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        volumeMounts:
+          - name: redirect-config
+            mountPath: /config
         resources:
           requests:
             memory: "25Mi"
             cpu: "100m"
+      volumes:
+        - name: redirect-config
+          configMap:
+            name: redirectconfig
+            items:
+            - key: redirect.config
+              path: redirect.config
