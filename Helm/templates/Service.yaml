@@ -3,9 +3,6 @@ kind: Service
 metadata:
   name: {{ .Values.serviceName }}
   namespace: {{ .Values.namespace }}
-  labels:
-    type: "website"
-    url: {{ .Values.serviceURL | quote }}
 spec:
   ports:
     - port: 80
