@@ -31,6 +31,7 @@ ADD www /var/www/html
 ADD config/run-httpd.sh /run-httpd.sh
 ADD config/startServices.sh /opt/startServices.sh
 RUN chmod -v +x /run-httpd.sh && \
-    chmod 755 /opt/startServices.sh
+    chmod 755 /opt/startServices.sh && \
+    chmod 755 /opt/configApacheRedirects
 ################################################################################
 CMD [ "/opt/startServices.sh" ]
