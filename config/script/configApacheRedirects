@@ -25,12 +25,13 @@ sub createConfig
     my @srcPts = split('\.', $sourceDomain);
     # my $outString = "<IfModule mod_rewrite.c>\n";
     #####
+    $sourceDomainORIG = $sourceDomain;
     $sourceDomain =~ s/\./\\\./g;
     #####
 
     # $outString .=   "  RewriteEngine On\n";
     my $outString =   "RewriteCond %{HTTP_HOST} ^$sourceDomain\$";
-    if (($srcPts[0] ne "www") && ("www." . $sourceDomain ne $destDomain))
+    if (($srcPts[0] ne "www") && ("www." . $sourceDomainORIG ne $destDomain))
     {
         $outString .=   "  [OR]\n";
         $outString .=   "RewriteCond %{HTTP_HOST} ^www\.$sourceDomain\$\n";
