@@ -28,14 +28,9 @@ sub createConfig
     $sourceDomain =~ s/\./\\\./g;
     #####
 
-#RewriteEngine On
-#RewriteBase /
-#RewriteCond %{HTTP_HOST} ^OLDDOMAIN\.com$ [NC]
-#RewriteRule ^(.*)$ http://NEWDOMAIN.com [R=301,L]
-
     # $outString .=   "  RewriteEngine On\n";
     my $outString =   "RewriteCond %{HTTP_HOST} ^$sourceDomain\$";
-    if ($srcPts[0] ne "www")
+    if (($srcPts[0] ne "www") && ("www." . $sourceDomain ne $destDomain))
     {
         $outString .=   "  [OR]\n";
         $outString .=   "RewriteCond %{HTTP_HOST} ^www\.$sourceDomain\$\n";
