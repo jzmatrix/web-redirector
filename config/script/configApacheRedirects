@@ -12,6 +12,8 @@ while (<IN>)
 }
 close (IN);
 open (OUT, ">/var/www/html/.htaccess");
+print OUT "RewriteEngine On\n";
+print OUT "############################################\n";
 print OUT $outputString;
 close (OUT);
 #################################################################
@@ -22,18 +24,27 @@ sub createConfig
     my ($sourceDomain, $destDomain) = @_;
     my @srcPts = split('\.', $sourceDomain);
     my $outString = "<IfModule mod_rewrite.c>\n";
+    #####
+    $sourceDomain =~ s/\./\\\./g;
+    #####
+
+#RewriteEngine On
+#RewriteBase /
+#RewriteCond %{HTTP_HOST} ^OLDDOMAIN\.com$ [NC]
+#RewriteRule ^(.*)$ http://NEWDOMAIN.com [R=301,L]
+
     $outString .=   "  RewriteEngine On\n";
-    $outString .=   "  RewriteCond %{HTTP_HOST} ^$sourceDomain\$";
+    $outString .=   "  RewriteCond %{HTTP_HOST} ^$sourceDomain\$ [NC]\$";
     if ($srcPts[0] ne "www")
     {
         $outString .=   "  [OR]\n";
-        $outString .=   "  RewriteCond %{HTTP_HOST} ^www.$sourceDomain\$\n";
+        $outString .=   "  RewriteCond %{HTTP_HOST} ^www.$sourceDomain\$ [NC]\$\n";
     }
     else 
     {
         $outString .= "\n";
     }
-    $outString .=   "  RewriteRule (.*)$ http://$destDomain/\$1 [R=301,L]\n";
+    $outString .=   "  RewriteRule ^(.*)\$ https://$destDomain/\$1 [R=301,L]\n";
     $outString .=   "</IfModule>\n";
     return $outString;
 }
